@@ -1,0 +1,37 @@
+name: Update Helm Chart Image Tag
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    types:
+      - completed
+
+jobs:
+  update_helm_chart:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install yq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          wget https://github.com/mikefarah/yq/releases/download/v4.33.3/yq_linux_amd64.tar.gz -O - |\
+          tar xz && sudo mv yq_linux_amd64 /usr/bin/yq
+
+      - name: Update image tag in Helm chart
+        run: |
+          image_sha=${{ github.event.workflow_run.head_sha }}
+          chart_path="charts/node-hostname/Chart.yaml"
+          values_path="charts/node-hostname/values.yaml"
+          yq e ".image.tag = \"${image_sha}\"" -i ${values_path}
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Update image tag in Helm chart to ${image_sha}"
+          git push
