@@ -16,3 +16,7 @@ This document lists potential improvement on this project for production usecase
    - Using external secret managers like Hashipcorp Vault to store secrets.
    - Defining Resource limits so that exploitation of compute is avoided.
    - Creating a backup and disaster recovery plan in case something really goes wrong.
+
+4. Add HTTPS instead of the default HTTP
+   - Use a self-signing certificate (or)
+   - Use a third-party provider like cert-manager to provide certificates.
