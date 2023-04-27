@@ -8,7 +8,7 @@ image:
   repository: gcr.io/elastisys-1000/node-hostname
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "84bdcccbb711fb2cedc8094a8996b64d18e87546"
 
 imagePullSecrets: []
 nameOverride: ""
